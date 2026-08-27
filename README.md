@@ -12,7 +12,8 @@
 ## Documentação
 
 - **[PLANNING.md](./PLANNING.md)** — planejamento completo (ADR, fases, modelo de dados, decisões pendentes)
-- Issues no GitHub — backlog detalhado por épico e entregável
+- **[Issues](https://github.com/0ctor/web-queue/issues)** — backlog (15 issues de planejamento)
+- **[Project board](https://github.com/orgs/0ctor/projects/55)** — quadro `web-queue` na org 0ctor
 
 ## Relação com outros produtos
 
