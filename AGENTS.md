@@ -21,7 +21,7 @@ Leia isto **antes** de mudanças de arquitetura, auth, deploy ou padrões compar
 > Vale para **qualquer** assistente (Cursor, Claude, Codex, ChatGPT, etc.) e para humanos.
 > Detalhe canônico: portal [`0ctor/backstage`](https://github.com/0ctor/backstage).
 
-1. **Git Flow:** proibido editar/push em `main`. `feature/*` ← `dev` → PR→`dev` → PR `dev`→`main` (deploy **só** em `main`). Hotfix: `fix/*` ← `main` → PR→`main` + devolver a `dev`. Apagar branch após merge (remota + local). Doc: [git-flow.md](https://github.com/0ctor/backstage/blob/main/git-flow.md).
+1. **Git Flow:** proibido editar/push em `main`. `feature/*` ← `dev` → PR→`dev` → PR `dev`→`main` (deploy **só** em `main`). **Hotfix absoluto** (bug que precisa ir já a `main`): `fix/*` ← `main` → PR→`main` + PR/cherry-pick do mesmo fix em `dev` — proibido acelerar via `dev`+promote. Apagar branch após merge (remota + local). Doc: [git-flow.md](https://github.com/0ctor/backstage/blob/main/git-flow.md).
 2. **Schema (ADR-005):** DDL/migrations **somente** em [`platform-database`](https://github.com/0ctor/platform-database). Proibido `Schema::` / `dbforge` / pastas `migrations/` de schema em outros apps.
 3. **Auth / SSO:** sempre [`web-auth`](https://github.com/0ctor/web-auth) (`auth.octor.com.br`). Não reinventar portal de login.
 4. **Segredos:** só `.env` / Vault — nunca commit. GitHub Actions: **Variables** para não-sensível (URLs, portas); **Secrets** para credenciais.
