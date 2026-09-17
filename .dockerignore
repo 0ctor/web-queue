@@ -1,0 +1,9 @@
+.git
+**/.git
+**/node_modules
+**/target
+**/dist
+**/.env
+**/*.log
+frontend/node_modules
+backend/v2/target

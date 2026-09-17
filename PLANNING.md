@@ -94,7 +94,7 @@ Novo `web-queue` com API própria, módulo próprio no plano, host próprio.
 
 ### Fase 1 — MVP "Painel de chamadas" (4–6 semanas)
 
-**Personas:** secretária chama; paciente vê na TV.
+**Personas:** recepção faz check-in; **médico chama no prontuário**; paciente vê na TV.
 
 | Camada | Entregável |
 |---|---|

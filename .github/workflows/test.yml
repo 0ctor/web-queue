@@ -1,0 +1,29 @@
+name: 🧪 Testes web-queue
+
+on:
+  push:
+    branches: [dev, feature/**, fix/**]
+  pull_request:
+    branches: [dev]
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: cargo test
+        working-directory: backend/v2
+        run: cargo test
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm ci
+        working-directory: frontend
+      - run: npm test
+        working-directory: frontend
