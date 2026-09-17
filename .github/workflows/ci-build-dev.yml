@@ -1,0 +1,68 @@
+# CI/build em `dev` (GHCR push homolog) — dual web + api.
+# Deploy staging: platform-deploy-hook em sp1-sd-octor-2 (branch `dev`).
+#
+# Runners: label `octor-dev` → host DEV (sp1-sd-octor-2).
+
+name: CI/build — web-queue (dev)
+
+on:
+  push:
+    branches: [dev]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-dev-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_WEB_NAME: 0ctor/web-queue
+  IMAGE_API_NAME: 0ctor/web-queue-api
+
+jobs:
+  quality:
+    name: Testes (bloqueia imagem)
+    runs-on: [self-hosted, Linux, X64, docker, octor-dev]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dtolnay/rust-toolchain@stable
+      - name: cargo test
+        working-directory: backend/v2
+        run: cargo test
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm ci
+        working-directory: frontend
+      - run: npm test
+        working-directory: frontend
+
+  build-and-push:
+    name: Build & push GHCR homolog
+    needs: quality
+    runs-on: [self-hosted, Linux, X64, docker, octor-dev]
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v5
+      - name: Login GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build & push images
+        env:
+          TAG_WEB: ${{ env.REGISTRY }}/${{ env.IMAGE_WEB_NAME }}:${{ github.sha }}
+          TAG_WEB_DEV: ${{ env.REGISTRY }}/${{ env.IMAGE_WEB_NAME }}:dev
+          TAG_API: ${{ env.REGISTRY }}/${{ env.IMAGE_API_NAME }}:${{ github.sha }}
+          TAG_API_DEV: ${{ env.REGISTRY }}/${{ env.IMAGE_API_NAME }}:dev
+        run: |
+          set -euo pipefail
+          docker build -t "$TAG_WEB" -t "$TAG_WEB_DEV" -f Dockerfile .
+          docker build -t "$TAG_API" -t "$TAG_API_DEV" -f backend/v2/Dockerfile ./backend/v2
+          docker push "$TAG_WEB"
+          docker push "$TAG_WEB_DEV"
+          docker push "$TAG_API"
+          docker push "$TAG_API_DEV"

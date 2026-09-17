@@ -1,0 +1,67 @@
+# Deploy homolog/VPN (sp1-sd-octor-2) — /home/ubuntu/octor/apps/web-queue/
+# TV: http://10.8.0.9:15177/display/:code  (sem DNS)
+# API: só rede Docker (MR nginx /queue-api → octor-web-queue-api:4545)
+
+name: web-queue
+
+services:
+  api:
+    image: ${IMAGE_API:-ghcr.io/0ctor/web-queue-api:dev}
+    container_name: octor-web-queue-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      TZ: America/Sao_Paulo
+      BACKEND_PORT: "4545"
+      RUST_LOG: info
+      LOKI_JOB: web-queue
+    networks:
+      - proxy
+      - octor
+    labels:
+      - traefik.enable=false
+      - traefik.docker.network=proxy
+      - traefik.http.services.web-queue-api.loadbalancer.server.port=4545
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:4545/health/live >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+
+  web:
+    image: ${IMAGE_WEB:-ghcr.io/0ctor/web-queue:dev}
+    container_name: octor-web-queue
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:15177:80"
+      - "10.8.0.9:15177:80"
+    networks:
+      - proxy
+      - octor
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1/ >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+networks:
+  proxy:
+    external: true
+  octor:
+    external: true
