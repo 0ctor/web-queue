@@ -367,8 +367,12 @@ pub async fn get_display(
             "use 6 caracteres".to_string(),
         ));
     }
+    // CAST(company_uuid AS CHAR(36)): a coluna usa COLLATE utf8mb4_bin, que o
+    // driver sqlx/MySQL reporta como VARBINARY — incompatível com Rust String.
+    // O CAST garante que o resultado volte como CHAR independente da collation.
     let settings = match sqlx::query(
-        r#"SELECT company_uuid, privacy_mode, sound_enabled
+        r#"SELECT CAST(company_uuid AS CHAR(36)) AS company_uuid,
+                  privacy_mode, sound_enabled
            FROM tbl_queue_settings
            WHERE display_code = ? AND deleted_at IS NULL
            LIMIT 1"#,
