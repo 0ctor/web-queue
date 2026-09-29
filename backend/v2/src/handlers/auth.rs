@@ -42,10 +42,13 @@ pub fn auth_error_response(detail: String) -> HttpResponse {
     if is_db_infra_error(&detail) {
         return service_unavailable_db(detail);
     }
-    HttpResponse::Unauthorized().json(ApiResponse::<()>::error(
-        "Unauthorized".to_string(),
-        detail,
-    ))
+    let user_message = if detail == "Invalid token" {
+        "Seu token expirou. Faça login novamente.".to_string()
+    } else {
+        "Unauthorized".to_string()
+    };
+
+    HttpResponse::Unauthorized().json(ApiResponse::<()>::error(user_message, detail))
 }
 
 async fn authenticate_token(pool: &MySqlPool, token: &str) -> Result<AuthUser, String> {
