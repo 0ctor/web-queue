@@ -43,7 +43,7 @@ pub fn auth_error_response(detail: String) -> HttpResponse {
         return service_unavailable_db(detail);
     }
     let user_message = if detail == "Invalid token" {
-        "Seu token expirou. Faça login novamente.".to_string()
+        "Este login foi encerrado. Faça login novamente.".to_string()
     } else {
         "Unauthorized".to_string()
     };
