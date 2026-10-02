@@ -1,0 +1,183 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "web-queue",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1080,
+      520
+    ],
+    "views": [
+      {
+        "id": "caminho",
+        "label": "Caminho principal",
+        "focus": [
+          "cliente",
+          "web",
+          "api",
+          "banco"
+        ],
+        "note": "Módulos ligados pelo código deste repositório."
+      },
+      {
+        "id": "apoio",
+        "label": "Auth, fila e logs",
+        "focus": [
+          "api",
+          "auth"
+        ],
+        "note": "Ligações laterais encontradas no código, fora do caminho de leitura."
+      }
+    ],
+    "repository": {
+      "url": "https://github.com/0ctor/web-queue",
+      "provider": "github",
+      "link_mode": "web",
+      "revision": "650d4e40526c4a84a265ab85284ce3793981931f"
+    }
+  },
+  "components": [
+    {
+      "id": "cliente",
+      "type": "external",
+      "label": "Cliente",
+      "sublabel": "navegador",
+      "pos": [
+        40,
+        150
+      ],
+      "size": [
+        176,
+        72
+      ]
+    },
+    {
+      "id": "web",
+      "type": "frontend",
+      "label": "frontend",
+      "sublabel": "Vite + React",
+      "pos": [
+        276,
+        150
+      ],
+      "size": [
+        188,
+        84
+      ],
+      "sources": [
+        {
+          "path": "frontend/package.json",
+          "line": 1,
+          "label": "Vite + React"
+        }
+      ]
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "API",
+      "sublabel": "auth, health, queue",
+      "pos": [
+        512,
+        150
+      ],
+      "size": [
+        188,
+        84
+      ],
+      "sources": [
+        {
+          "path": "backend/v2/src/main.rs",
+          "line": 2,
+          "label": "main"
+        }
+      ]
+    },
+    {
+      "id": "banco",
+      "type": "database",
+      "label": "MySQL",
+      "sublabel": "persistência",
+      "pos": [
+        748,
+        150
+      ],
+      "size": [
+        176,
+        72
+      ],
+      "sources": [
+        {
+          "path": "backend/v2/src/main.rs",
+          "line": 40,
+          "label": "MySQL"
+        }
+      ]
+    },
+    {
+      "id": "auth",
+      "type": "security",
+      "label": "Auth",
+      "sublabel": "autenticação",
+      "pos": [
+        276.0,
+        320
+      ],
+      "size": [
+        176,
+        68
+      ],
+      "sources": [
+        {
+          "path": "backend/v2/src/models/auth.rs",
+          "line": 1,
+          "label": "auth"
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "cliente-web-https",
+      "from": "cliente",
+      "to": "web",
+      "label": "HTTPS",
+      "variant": "emphasis"
+    },
+    {
+      "id": "web-api-https",
+      "from": "web",
+      "to": "api",
+      "label": "HTTPS",
+      "variant": "default"
+    },
+    {
+      "id": "api-banco-sql",
+      "from": "api",
+      "to": "banco",
+      "label": "SQL",
+      "variant": "default"
+    },
+    {
+      "id": "api-auth-auth",
+      "from": "api",
+      "to": "auth",
+      "label": "auth",
+      "variant": "security",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDy": 28
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Handlers",
+      "items": [
+        "auth",
+        "health"
+      ]
+    }
+  ]
+}
