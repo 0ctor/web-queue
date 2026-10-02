@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "Pedido em web-queue",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1080,
+      480
+    ],
+    "column_fit": "spread",
+    "views": [
+      {
+        "id": "pedido",
+        "label": "Pedido",
+        "focus": [
+          "cliente",
+          "web",
+          "api",
+          "auth",
+          "banco"
+        ],
+        "note": "Ordem vista nos módulos de entrada, auth e persistência."
+      }
+    ]
+  },
+  "participants": [
+    {
+      "id": "cliente",
+      "type": "external",
+      "label": "Cliente",
+      "sublabel": "HTTP"
+    },
+    {
+      "id": "web",
+      "type": "frontend",
+      "label": "Frontend",
+      "sublabel": "UI"
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "API",
+      "sublabel": "web-queue"
+    },
+    {
+      "id": "auth",
+      "type": "security",
+      "label": "Auth",
+      "sublabel": "autenticação"
+    },
+    {
+      "id": "banco",
+      "type": "database",
+      "label": "MySQL",
+      "sublabel": "persistência"
+    }
+  ],
+  "messages": [
+    {
+      "id": "cliente-web-abre-a-tela-178",
+      "from": "cliente",
+      "to": "web",
+      "y": 178,
+      "label": "abre a tela",
+      "variant": "default"
+    },
+    {
+      "id": "web-api-chama-v1-206",
+      "from": "web",
+      "to": "api",
+      "y": 206,
+      "label": "chama /v1",
+      "variant": "emphasis"
+    },
+    {
+      "id": "api-auth-valida-sessao-234",
+      "from": "api",
+      "to": "auth",
+      "y": 234,
+      "label": "valida sessão",
+      "variant": "security"
+    },
+    {
+      "id": "auth-api-identidade-262",
+      "from": "auth",
+      "to": "api",
+      "y": 262,
+      "label": "identidade",
+      "variant": "return"
+    },
+    {
+      "id": "api-banco-consulta-290",
+      "from": "api",
+      "to": "banco",
+      "y": 290,
+      "label": "consulta",
+      "variant": "emphasis"
+    },
+    {
+      "id": "banco-api-linhas-318",
+      "from": "banco",
+      "to": "api",
+      "y": 318,
+      "label": "linhas",
+      "variant": "return"
+    },
+    {
+      "id": "api-web-resposta-346",
+      "from": "api",
+      "to": "web",
+      "y": 346,
+      "label": "resposta",
+      "variant": "return"
+    },
+    {
+      "id": "web-cliente-render-374",
+      "from": "web",
+      "to": "cliente",
+      "y": 374,
+      "label": "render",
+      "variant": "return"
+    }
+  ]
+}
