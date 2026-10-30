@@ -8,7 +8,7 @@ on:
 
 jobs:
   backend:
-    runs-on: ubuntu-latest
+    runs-on: ${{ ((github.event_name == 'pull_request' && github.base_ref == 'main') || github.ref == 'refs/heads/main') && fromJSON('["self-hosted","Linux","X64","docker","octor-prd"]') || fromJSON('["self-hosted","Linux","X64","docker","octor-dev"]') }}
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
@@ -17,7 +17,7 @@ jobs:
         run: cargo test
 
   frontend:
-    runs-on: ubuntu-latest
+    runs-on: ${{ ((github.event_name == 'pull_request' && github.base_ref == 'main') || github.ref == 'refs/heads/main') && fromJSON('["self-hosted","Linux","X64","docker","octor-prd"]') || fromJSON('["self-hosted","Linux","X64","docker","octor-dev"]') }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
